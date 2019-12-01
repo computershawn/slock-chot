@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+
+<head>
+  <title>slock chat</title>
+  <link rel="stylesheet" type="text/css" href="/assets/css/styles.css">
+</head>
+
+<body>
+  <header>
+    <h3 class="app-title">slock</h3>
+    <h4 id="user-name"></h4>
+  </header>
+  <main>
+    <div class="main-content">
+      <div class="sidebar-wrapper">
+        <p>list of users online...</p>
+      </div>
+      <div class="messages-wrapper">
+        <ul class="message-list" id="messages"></ul>
+      </div>
+    </div>
+    <div class="footer-content">
+      <div id="notify-typing" class="hidden"><p id="users-typing">...</p></div>
+      <form id="chat-form" action="">
+        <input id="msg" autocomplete="off" /><button>Send</button>
+      </form>
+    </div>
+  </main>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="communication.js"></script>
+</body>
+
+</html>
+
+
+<!--
+  TODO:
+  [ok] Broadcast a message to connected users when someone connects or disconnects.
+  [ok] Add support for nicknames.
+  [ok] Don’t send the same message to the user that sent it himself. Instead, append the message directly as soon as he presses enter.
+  [ok] Add “{user} is typing” functionality.
+  [] Show who’s online.
+  [] Add private messaging.-->

@@ -1,0 +1,149 @@
+/* .App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #09d3ac;
+} */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font: 13px Helvetica, Arial;
+}
+
+form {
+  background: #000;
+  padding: 3px;
+}
+
+form input {
+  border: 0;
+  padding: 10px;
+  width: 90%;
+  margin-right: .5%;
+}
+
+form button {
+  width: 9%;
+  background: rgb(130, 224, 255);
+  border: none;
+  padding: 10px;
+}
+
+.footer-content {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}
+
+#notify-typing {
+  padding: 3px 3px 3px 8px;
+  background-color: #d6ffe7;
+}
+
+#notify-typing p {
+  font-style: italic;
+}
+
+.hidden {
+  display: none;
+}
+
+#users-typing {
+  font-size: 0.9em;
+}
+
+.messages-wrapper {
+  width: 90%;
+}
+
+#messages {
+  list-style-type: none;
+}
+
+#messages li {
+  padding: 5px 10px;
+  background: #fdfdfd;
+}
+
+#messages .notification {
+  font-style: italic;
+  color: #808080;
+  background: #f5f5f5;
+  font-size: 0.9em;
+}
+
+.message-list {
+  margin: 0 0 60px 0;
+  padding: 0;
+}
+
+.user-name {
+  font-weight: bold;
+}
+
+h3.app-title {
+  padding: 0.5em;
+  margin-bottom: 0.5em;
+  background-color: #484848;
+  color: #fff;
+}
+
+h4#user-name {
+  padding: 0.5em;
+}
+
+@keyframes fade {
+  from { opacity: 1.0; }
+  50% { opacity: 0.25; }
+  to { opacity: 1.0; }
+}
+
+@-webkit-keyframes fade {
+  from { opacity: 1.0; }
+  50% { opacity: 0.25; }
+  to { opacity: 1.0; }
+}
+
+.blink {
+animation:fade 640ms infinite;
+-webkit-animation:fade 640ms infinite;
+}
+
+.message-cont {
+  display: flex;
+}
+
+.avi-cont {
+  margin-right: 8px;
+  padding-top: 2px;
+}
+
+.main-content {
+  display: flex;
+
+}
+
+.sidebar-wrapper {
+  width: 240px;
+  background-color: #e4e4e4;
+}
