@@ -5,22 +5,18 @@ const { PORT } = require('./config')
 
 let usersOnline = {};
 
-const addToGroup = (id, userName) => {
+const addUserToGroup = (id, user) => {
   let userIds = Object.keys(usersOnline);
   if(!userIds.includes(id)) {
     usersOnline[`${id}`] = {
-      name: userName,
-      avi: 'http://example.com/avi.png',
+      userName: user.userName,
+      avi: user.avi,
       typing: false,
     }
   }
-  // console.log('\n|------>')
-  // console.log(usersOnline)
-  // console.log('<------|\n')
-}
-
-const getShortName = (id) => {
-  return usersOnline[id].name.split(' ')[0]
+  console.log('\n|------>')
+  console.log(usersOnline)
+  console.log('<------|\n')
 }
 
 io.on('connection', function (socket) {
@@ -33,35 +29,43 @@ io.on('connection', function (socket) {
     usersOnline[socket.id].typing = false;
     const usersTyping = Object.entries(usersOnline)
       .filter(item => item[1].typing)
-      .map(item => [item[0], getShortName(item[0])]);
-    io.emit('typing status', usersTyping);
+      .map(item => {
+        const id = item[0];
+        const userName = usersOnline[id].userName;
+        return [id, userName];
+      });
+    // console.log(usersTyping);
+    io.emit('typing-status', usersTyping);
     // ^^^^^^^^^^^^^^^^
 
 
     // Send message to everyone except original sender
     // Notifies other users that this user left
-    const name = usersOnline[socket.id].name;
-    socket.broadcast.emit('byebye', name); 
+    const userName = usersOnline[socket.id].userName;
+    socket.broadcast.emit('bye-bye', userName); 
     delete usersOnline[socket.id];
   });
-  socket.on('chat message', (msg) => {
+  socket.on('chat-message-out', (msg) => {
     // Send message to everyone except original sender
-    const shortName = getShortName(socket.id);
-    socket.broadcast.emit('chat message', `${shortName}||||${msg}`);
-    // socket.broadcast.emit('chat message', [shortName, msg]);
+    const user = usersOnline[socket.id];
+    socket.broadcast.emit('chat-message-in', {...user, text: msg});
   });
-  socket.on('announce', (userName) => {
+  socket.on('announce', (u) => {
     // Send message to everyone except original sender
     // Notifies other users that this user has arrived
-    socket.broadcast.emit('arrived', userName);
-    addToGroup(socket.id, userName);
+    socket.broadcast.emit('arrived', u.userName);
+    addUserToGroup(socket.id, u);
   });
-  socket.on('user typing', (typingStatus) => {
+  socket.on('user-typing', (typingStatus) => {
     usersOnline[socket.id].typing = typingStatus;
     const usersTyping = Object.entries(usersOnline)
       .filter(item => item[1].typing)
-      .map(item => [item[0], getShortName(item[0])]);
-    io.emit('typing status', usersTyping);
+      .map(item => {
+        const id = item[0];
+        const userName = usersOnline[id].userName;
+        return [id, userName];
+      });
+      io.emit('typing-status', usersTyping);
   })
 });
 

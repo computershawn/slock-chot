@@ -1,28 +1,30 @@
 import io from 'socket.io-client';
-import users from './tempUserData'
+import users from './tempData'
 
 const socket = io('http://localhost:3000');
 
 let typing = 0;
 
-const getRandomUser = () => {
+const getUser = () => {
   const randomUserIndex = Math.floor(Math.random() * users.length)
-  console.log(users[randomUserIndex]);
+  return(users[randomUserIndex]);
 }
 
-const randomUserIndex = Math.floor(Math.random() * users.length)
-socket.userName = users[randomUserIndex]
-socket.on('chat message', msg => appendMessage(0, msg));
-socket.on('arrived', user => appendMessage(1, `[ ${user} joined ]`));
-socket.on('byebye', user => appendMessage(1, `[ ${user} left ]`));
+const mySelf = getUser();
 
-const getAvi = (firstName) => {
-  const index = users.findIndex(item => item.includes(firstName))
-  return (index < 10) ? `avi-0${index}.png` : `avi-${index}.png`;
-}
+socket.mySelf = mySelf;
+socket.on('connect', function () {
+  // Let the server know you've arrived
+  // socket.emit('announce', socket.mySelf.userName);
+  socket.emit('announce', socket.mySelf);
+});
+socket.on('chat-message-in', message => appendMessage(0, message));
+socket.on('arrived', userName => appendMessage(1, `[ ${userName} joined ]`));
+socket.on('bye-bye', userName => appendMessage(1, `[ ${userName} left ]`));
+
 
 // Track and display how many users are currently typing
-socket.on('typing status', usersTyping => {
+socket.on('typing-status', usersTyping => {
   const maxTyping = 4;
   const otherUsers = usersTyping.filter(item => item[0] !== socket.id )
   const typingBar = document.getElementById('notify-typing');
@@ -48,26 +50,21 @@ socket.on('typing status', usersTyping => {
   }
 });
 
-socket.on('connect', function () {
-  // Let the server know you've arrived
-  socket.emit('announce', socket.userName);
-});
-
 const initializeChat = () => {
   const form = document.querySelector('#chat-form');
   const userInput = document.querySelector('#msg');
   userInput.addEventListener('input', checkTyping);
   form.addEventListener('submit', handleSubmit);
-  document.getElementById("user-name").innerHTML = socket.userName;
+  // document.getElementById("user-name").innerHTML = socket.mySelf;
 }
 
 const handleSubmit = evt => {
   evt.preventDefault();
-  const msg = document.querySelector('#msg').value;
-  const m = msg.trim();
-  if(m.length > 0) {
-    socket.emit('chat message', m);
-    appendMessage(0, `${socket.userName.split(' ')[0]}||||${m}`);
+  const inputText = document.querySelector('#msg').value;
+  const msg = inputText.trim();
+  if(msg.length > 0) {
+    socket.emit('chat-message-out', msg);
+    appendMessage(0, {...socket.mySelf, text: msg});
   }
   document.querySelector('#msg').value = '';
   echoTyping(0);
@@ -75,7 +72,7 @@ const handleSubmit = evt => {
 
 // Notify the server that I am typing
 const echoTyping = isTyping => {
-  socket.emit('user typing', isTyping === 1);
+  socket.emit('user-typing', isTyping === 1);
   typing = isTyping;
 }
 
@@ -99,11 +96,9 @@ const appendMessage = (type, msg) => {
   listItem.classList.add(cssClass);
   listItem.innerHTML = msg;
   if(type === 0) {
-    const m = msg.split('||||') // A little bit janky
-    const aviFileName = getAvi(m[0]);
     let elem = "<div class='message-cont'>";
-    elem += `<div class='avi-cont'><img class="avi-image" src='/assets/avis/${aviFileName}' alt="avatar image" width="24" height="24" /></div>`
-    elem += `<div><p><span class="user-name">${m[0]}</span> / ${m[1]}</p></div>`;
+    elem += `<div class='avi-cont'><img class="avi-image" src='https://res.cloudinary.com/sjcpu4096/image/upload/${msg.avi}.png' alt="avatar" width="24" height="24" /></div>`
+    elem += `<div><p><span class="user-name">${msg.userName}</span> / ${msg.text}</p></div>`;
     elem += '</div>';
     listItem.innerHTML = elem;
   }
@@ -113,39 +108,10 @@ const appendMessage = (type, msg) => {
   lastItem.scrollIntoView();
 }
 
-// const comms = 'hello'
 const Comms = {
   initialize: initializeChat,
-  randomUser: getRandomUser,
+  mySelf: mySelf,
 }
 
-// module.exports = {
-//     // initialize: initializeChat,
-//     comms: comms
-// }
-
-
-
-// import config from '../config'
-// const ThingApiService = {
-//   updateProduct(thingId, text, rating) {
-//     return fetch(`${config.API_ENDPOINT}/reviews`, {
-//       method: 'POST',
-//       headers: {
-//         'content-type': 'application/json',
-//       },
-//       body: JSON.stringify({
-//         thing_id: thingId,
-//         rating,
-//         text,
-//       }),
-//     })
-//       .then(res =>
-//         (!res.ok)
-//           ? res.json().then(e => Promise.reject(e))
-//           : res.json()
-//       )
-//   }  
-// }
 
 export default Comms
