@@ -25,9 +25,9 @@ export default class Message extends Component {
 }
 
 Message.propTypes = {
-  user: PropTypes.shape({
-    userName: PropTypes.string,
-    avi: PropTypes.string,
-  }).isRequired,
-  content: PropTypes.string.isRequired,
+  data: PropTypes.shape({
+    userName: PropTypes.string.isRequired,
+    avi: PropTypes.string.isRequired,
+    content: PropTypes.string.isRequired,
+  })
 }

@@ -64,10 +64,6 @@ form button {
   font-style: italic;
 }
 
-.hidden {
-  display: none;
-}
-
 #users-typing {
   font-size: 0.9em;
 }
@@ -76,7 +72,7 @@ form button {
   width: 90%;
 }
 
-#messages {
+#messages, #notifications {
   list-style-type: none;
 }
 
@@ -85,12 +81,21 @@ form button {
   background: #fdfdfd;
 }
 
-#messages .notification {
+#notifications li {
+  padding: 5px 10px;
+  background: tomato;
+}
+
+#notifications li:not(:last-child) {
+  margin-bottom: 0.25em;
+}
+
+/* #messages .notification {
   font-style: italic;
   color: #808080;
   background: #f5f5f5;
   font-size: 0.9em;
-}
+} */
 
 .message-list {
   margin: 0 0 60px 0;
@@ -146,4 +151,19 @@ animation:fade 640ms infinite;
 .sidebar-wrapper {
   width: 240px;
   background-color: #e4e4e4;
+}
+
+.notify-cont {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.notify-text {
+}
+
+.dismiss-notify {
+  padding: 4px;
+  font-size: 1.2em;
+  cursor: pointer;
 }

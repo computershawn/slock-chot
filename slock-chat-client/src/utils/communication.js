@@ -3,8 +3,6 @@ import users from './tempData'
 
 const socket = io('http://localhost:3000');
 
-let typing = 0;
-
 const getUser = () => {
   const randomUserIndex = Math.floor(Math.random() * users.length)
   return(users[randomUserIndex]);
@@ -15,7 +13,6 @@ const mySelf = getUser();
 socket.mySelf = mySelf;
 socket.on('connect', function () {
   // Let the server know you've arrived
-  // socket.emit('announce', socket.mySelf.userName);
   socket.emit('announce', socket.mySelf);
 });
 socket.on('chat-message-in', message => appendMessage(0, message));
@@ -51,44 +48,44 @@ socket.on('typing-status', usersTyping => {
 });
 
 const initializeChat = () => {
-  const form = document.querySelector('#chat-form');
-  const userInput = document.querySelector('#msg');
-  userInput.addEventListener('input', checkTyping);
-  form.addEventListener('submit', handleSubmit);
+  // const form = document.querySelector('#chat-form');
+  // const userInput = document.querySelector('#msg');
+  // userInput.addEventListener('input', checkTyping);
+  // form.addEventListener('submit', handleSubmit);
   // document.getElementById("user-name").innerHTML = socket.mySelf;
 }
 
-const handleSubmit = evt => {
-  evt.preventDefault();
-  const inputText = document.querySelector('#msg').value;
-  const msg = inputText.trim();
-  if(msg.length > 0) {
-    socket.emit('chat-message-out', msg);
-    appendMessage(0, {...socket.mySelf, text: msg});
-  }
-  document.querySelector('#msg').value = '';
-  echoTyping(0);
-}
+// const handleSubmit = evt => {
+//   evt.preventDefault();
+//   const inputText = document.querySelector('#msg').value;
+//   const msg = inputText.trim();
+//   if(msg.length > 0) {
+//     socket.emit('chat-message-out', msg);
+//     appendMessage(0, {...socket.mySelf, text: msg});
+//   }
+//   document.querySelector('#msg').value = '';
+//   echoTyping(0);
+// }
 
 // Notify the server that I am typing
-const echoTyping = isTyping => {
-  socket.emit('user-typing', isTyping === 1);
-  typing = isTyping;
-}
+// const echoTyping = isTyping => {
+//   socket.emit('user-typing', isTyping === 1);
+//   typing = isTyping;
+// }
 
 // Function checkTyping figures out whether user
 // has started or stopped typing
-const checkTyping = (e) => {
-  const s = e.target.value;
-  if(typing === 1 && s.length === 0) {
-    // user finished typing
-    echoTyping(0);
-  }
-  if(typing === 0 && s.length > 0) {
-    // user started typing
-    echoTyping(1);
-  }
-}
+// const checkTyping = (e) => {
+//   const s = e.target.value;
+//   if(typing === 1 && s.length === 0) {
+//     // user finished typing
+//     echoTyping(0);
+//   }
+//   if(typing === 0 && s.length > 0) {
+//     // user started typing
+//     echoTyping(1);
+//   }
+// }
 
 const appendMessage = (type, msg) => {
   const listItem = document.createElement("li");
