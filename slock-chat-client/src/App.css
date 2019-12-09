@@ -55,6 +55,14 @@ form button {
   width: 100%;
 }
 
+.header-content {
+  position: fixed;
+  top: 0;
+  height: 40px;
+  width: 100%;
+  background-color: #484848;
+}
+
 #notify-typing {
   padding: 3px 3px 3px 8px;
   background-color: #d6ffe7;
@@ -70,25 +78,25 @@ form button {
 
 .messages-wrapper {
   width: 90%;
+  overflow-y: scroll;
 }
 
-#messages, #notifications {
+.messages-wrapper ul, .sidebar-wrapper ul {
   list-style-type: none;
 }
 
 #messages li {
   padding: 5px 10px;
-  background: #fdfdfd;
 }
 
-#notifications li {
+/* #notifications li {
   padding: 5px 10px;
   background: tomato;
 }
 
 #notifications li:not(:last-child) {
   margin-bottom: 0.25em;
-}
+} */
 
 /* #messages .notification {
   font-style: italic;
@@ -98,7 +106,7 @@ form button {
 } */
 
 .message-list {
-  margin: 0 0 60px 0;
+  margin: 0 0 40px 0;
   padding: 0;
 }
 
@@ -108,8 +116,6 @@ form button {
 
 h3.app-title {
   padding: 0.5em;
-  margin-bottom: 0.5em;
-  background-color: #484848;
   color: #fff;
 }
 
@@ -136,6 +142,7 @@ animation:fade 640ms infinite;
 
 .message-cont {
   display: flex;
+  padding: 4px;
 }
 
 .avi-cont {
@@ -143,27 +150,46 @@ animation:fade 640ms infinite;
   padding-top: 2px;
 }
 
+.container {
+  padding-top: 40px;
+  height: 100vh;
+}
+
 .main-content {
   display: flex;
-
+  height: 100%;
 }
 
 .sidebar-wrapper {
   width: 240px;
   background-color: #e4e4e4;
+  padding: 16px;
+  overflow-y: scroll;  
 }
 
-.notify-cont {
+/* .notify-cont {
   display: flex;
   justify-content: space-between;
   align-items: center;
-}
+} */
 
-.notify-text {
-}
+/* .notify-text {
+} */
 
-.dismiss-notify {
+/* .dismiss-notify {
   padding: 4px;
   font-size: 1.2em;
   cursor: pointer;
+} */
+
+.user-msg {
+  background: #fdfdfd;
+}
+
+.sys-msg {
+  background: #ebfff6;
+}
+
+.people-list-item {
+  padding: 4px;
 }
