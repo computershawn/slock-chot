@@ -14,9 +14,9 @@ const addUserToGroup = (id, user) => {
       typing: false,
     }
   }
-  console.log('\n|------>')
-  console.log(usersOnline)
-  console.log('<------|\n')
+  // console.log('\n|------>')
+  // console.log(usersOnline)
+  // console.log('<------|\n')
 }
 
 io.on('connection', function (socket) {

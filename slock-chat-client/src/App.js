@@ -11,53 +11,53 @@ export default class App extends Component {
   constructor() {
     super();
     this.state = {
-      mySelf: { firstName: '…', lastName: '…', userName: '', avi: 'avi-20'},
+      mySelf: { firstName: '…', lastName: '…', userName: '', avi: 'avi-20' },
       stream: [],
-      lobbyStatus: [],
+      usersPresent: [],
       otherUsersTyping: '…',
-      // stream: [
-      //   {
-      //     userName: 'rebecca',
-      //     avi: 'avi-07',
-      //     content: "What are you doing here?",
-      //   },
-      //   {
-      //     userName: 'nichelle',
-      //     avi: 'avi-19',
-      //     content: "Take it easy I'm just a messenger. I brought you a drink.",
-      //   },
-      //   {
-      //     userName: 'rebecca',
-      //     avi: 'avi-07',
-      //     content: "I don't want your drink. Why are you following me?",
-      //   },
-      //   {
-      //     userName: 'nichelle',
-      //     avi: 'avi-19',
-      //     content: "I'm not following you. I'm looking for you. Big difference.",
-      //   },
-      // ],
       typing: 0,
     };
     this.checkTyping = this.checkTyping.bind(this);
     this.handleSendMessage = this.handleSendMessage.bind(this);
     this.updateMessageList = this.updateMessageList.bind(this);
     this.notifyTypingStatus = this.notifyTypingStatus.bind(this);
-    this.notifyLobbyStatus = this.notifyLobbyStatus.bind(this);
   }
 
   updateMessageList(msg) {
-    // console.log('just received this message:', msg);
+    let content = '';
+    if (msg.messageType === 'user-message') {
+      content = msg.content;
+    }
+    let updatedUsersPresent = this.state.usersPresent;
+    if (msg.messageType === 'system-message') {
+      const person = msg.content[0];
+      const arriving = msg.content[1] === 1;
+      const direction = arriving ? 'joined' : 'left';
+      content = `${person} ${direction}`
+      if(arriving) {
+        // console.log('usersPresent', usersPresent);
+        updatedUsersPresent.push(person);
+        // console.log('roooom', usersPresent);
+      } else {
+        updatedUsersPresent = updatedUsersPresent.filter(name => name !== person)
+      }
+    }
     const updatedStream = [
       ...this.state.stream,
       {
-        userName: msg.userName, 
-        avi: msg.avi,
-        content: msg.content,
+        messageType: msg.messageType,
+        userName: msg.userName || '',
+        avi: msg.avi || '',
+        content: content,
       }
     ];
     this.setState({
       stream: updatedStream,
+      usersPresent: updatedUsersPresent,
+    }, () => {
+      if(this.state.stream.length > 0) {
+        document.querySelector(".message-list").lastElementChild.scrollIntoView()
+      }
     })
   }
 
@@ -65,14 +65,6 @@ export default class App extends Component {
     this.setState({
       otherUsersTyping: status,
     })
-  }
-
-  notifyLobbyStatus(entryOrExit) {
-    let newLobbyStatus = this.state.lobbyStatus;
-    newLobbyStatus.unshift(entryOrExit);
-    this.setState({
-      lobbyStatus: newLobbyStatus,
-    });
   }
 
   componentDidMount() {
@@ -92,14 +84,6 @@ export default class App extends Component {
       typing: isTyping,
     });
     this.messageManager.sayTypingStatus(isTyping === 1);
-  }
-
-  // Dismiss notification
-  dismissLobbyStatus = n => {
-    const newLobbyStatus = this.state.lobbyStatus.filter((_, index) => index !== n);
-    this.setState({
-      lobbyStatus: newLobbyStatus,
-    });
   }
 
   // // Function checkTyping figures out whether user
@@ -124,37 +108,36 @@ export default class App extends Component {
   handleSendMessage(evt) {
     evt.preventDefault();
     const msg = this.state.msgText.trim();
-    if(msg.length > 0) {
+    if (msg.length > 0) {
       this.messageManager.forwardMessage(msg);
       const addThisMsgToLocalState = {
+        messageType: 'user-message',
         userName: this.state.mySelf.userName,
         avi: this.state.mySelf.avi,
         content: msg,
       }
       this.updateMessageList(addThisMsgToLocalState);
-      // console.log('about to send this message:', addThisMsgToLocalState);
     }
     this.echoTyping(0);
     evt.target.reset();
   }
 
   render() {
-    const { mySelf, stream, otherUsersTyping, lobbyStatus} = this.state;
+    const { mySelf, stream, usersPresent, otherUsersTyping, lobbyStatus } = this.state;
     return (
       <div className="App">
-        <header>
+        <header className="header-content">
           <h3 className="app-title">slock</h3>
-          <h4 id="user-name">{mySelf.firstName} {mySelf.lastName}</h4>
-        </header>        
-        <main>
+        </header>
+        <div className="container">
           <div className="main-content">
-            <SideBar />
+            <SideBar usersPresent={usersPresent} mySelf={mySelf} />
             <NotifyContext.Provider value={noti => this.dismissLobbyStatus(noti)}>
               <MessageArea stream={stream} lobbyStatus={lobbyStatus} />
             </NotifyContext.Provider>
           </div>
-          <MessageInput otherUsersTyping={otherUsersTyping} handleChange={this.checkTyping} handleSubmit={this.handleSendMessage} />
-        </main>
+        </div>
+        <MessageInput otherUsersTyping={otherUsersTyping} handleChange={this.checkTyping} handleSubmit={this.handleSendMessage} />
       </div>
     );
   }

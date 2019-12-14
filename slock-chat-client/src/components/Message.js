@@ -4,11 +4,10 @@ import PropTypes from 'prop-types';
 
 export default class Message extends Component {
   // ...
-  render() {
-    const { data } = this.props;
+  showUserMsg(data) {
     const aviURL = `https://res.cloudinary.com/sjcpu4096/image/upload/${data.avi}.png`;
     return (
-      <li>
+      <li className="user-msg">
         <div className='message-cont'>
           <div className='avi-cont'>
             <img className="avi-image" src={aviURL} alt="user avatar" width="24" height="24" />
@@ -18,6 +17,39 @@ export default class Message extends Component {
               <span className="user-name">{data.userName}</span> / {data.content}
             </p>
           </div>
+        </div>
+      </li>
+    );
+  };
+
+  showSysMsg(data) {
+    return (
+      <li className="sys-msg">
+        <div className='message-cont'>
+          <div>
+            <p>
+              <em>{data.content}</em>
+            </p>
+          </div>
+        </div>
+      </li>
+    );
+  };
+
+  render() {
+    const { data } = this.props;
+    if(data.messageType === 'user-message') {
+      return this.showUserMsg(data);
+    }
+    if(data.messageType === 'system-message') {
+      return this.showSysMsg(data);
+    }
+    return (
+      <li>
+        <div>
+          <p>
+            NO DATA
+          </p>
         </div>
       </li>
     );
