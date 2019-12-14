@@ -106,7 +106,7 @@ form button {
 } */
 
 .message-list {
-  margin: 0 0 40px 0;
+  margin: 0;
   padding: 0;
 }
 
@@ -152,6 +152,7 @@ animation:fade 640ms infinite;
 
 .container {
   padding-top: 40px;
+  padding-bottom: 40px;
   height: 100vh;
 }
 
@@ -191,5 +192,5 @@ animation:fade 640ms infinite;
 }
 
 .people-list-item {
-  padding: 4px;
+  padding: 4px 0;
 }

@@ -4,7 +4,7 @@ import React from 'react';
 export default function SideBar(props) {
   return (
     <div className="sidebar-wrapper">
-      <h4>users online</h4>
+      <h4>Users Online</h4>
       <ul>
         <li><div className="people-list-item">{props.mySelf.userName} ◆</div></li>
         {
